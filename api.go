@@ -3,12 +3,18 @@ package main
 import "fmt"
 
 // GetPenaltiesByBill: Получить штраф по УИН
-func (a3 *A3) GetPenaltiesByBill(bill string, extStatus bool) (*GetPenaltiesResponse, error) {
+func (a3 *A3) GetPenaltyByBill(bill string, extStatus bool) (Penalty, bool, error) {
 	resp, err := a3.getPenalties(penaltyByBillReq(bill, extStatus, a3.config.authKey))
 	if err != nil {
-		return nil, fmt.Errorf("GetPenaltiesByBill error: %v", err)
+		return Penalty{}, false, fmt.Errorf("GetPenaltiesByBill error: %v", err)
 	}
-	return resp, nil
+	if !resp.isOk() {
+		return Penalty{}, false, fmt.Errorf(resp.Response.Result.ResMessage)
+	}
+	if !resp.hasAny() {
+		return Penalty{}, false, nil
+	}
+	return resp.Response.Penalties.Penalty[0], true, nil
 }
 
 // FetchBySTS: Получить штрафы по СТС
