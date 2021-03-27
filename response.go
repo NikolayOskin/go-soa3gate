@@ -1,4 +1,4 @@
-package main
+package soa3gate
 
 type GetPenaltiesResponse struct {
 	Response struct {
