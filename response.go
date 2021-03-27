@@ -3,31 +3,30 @@ package main
 type GetPenaltiesResponse struct {
 	Response struct {
 		Penalties struct {
-			Penalty []penalty `json:"penalty"`
+			Penalty []Penalty `json:"Penalty"`
 		} `json:"penalties"`
 		Result struct {
-			ResCode string `json:"resCode"`
+			ResCode    string `json:"resCode"`
+			ResMessage string `json:"resMessage"`
 		} `json:"result"`
 	} `json:"response"`
 }
 
-// IsOk проверяет успешность выполнения запроса
-func (resp *GetPenaltiesResponse) IsOk() bool {
+func (resp *GetPenaltiesResponse) isOk() bool {
 	if resp.Response.Result.ResCode == "0" {
 		return true
 	}
 	return false
 }
 
-// HasResults проверяет есть ли хотя бы один штраф в ответе на GetPenalties запрос
-func (resp *GetPenaltiesResponse) HasResults() bool {
+func (resp *GetPenaltiesResponse) hasAny() bool {
 	if len(resp.Response.Penalties.Penalty) > 0 {
 		return true
 	}
 	return false
 }
 
-type penalty struct {
+type Penalty struct {
 	AddInfo      string `json:"addInfo"`
 	Amount       string `json:"amount"`
 	AmountToPay  string `json:"amountToPay"`
