@@ -2,10 +2,12 @@ package soa3gate
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"time"
 )
 
 type Request struct {
@@ -37,6 +39,9 @@ func (a3 *A3) request(jsonReq []byte, r *Request) ([]byte, error) {
 		return nil, err
 	}
 	req.Header.Set("Content-Type", "application/json")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	req = req.WithContext(ctx)
 
 	resp, err := a3.client.Do(req)
 	if err != nil {
