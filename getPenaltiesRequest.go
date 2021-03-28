@@ -42,3 +42,20 @@ func penaltiesByDocsReq(docs []Doc, extStatus bool, authKey string) *Request {
 	}
 	return newA3Request(r, "getPenalties")
 }
+
+func isDocTypeValid(docType string) bool {
+	for _, allowedType := range getAllowedDocTypes() {
+		if docType == allowedType {
+			return true
+		}
+	}
+	return false
+}
+
+/*
+Допустимые типы для поиска бюджетных начислений согласно описанию протокола.
+см. https://tech.a-3.ru/protokol-soa3gate-light-api/tehnicheskoe-opisanie-protokola#getPenalties
+*/
+func getAllowedDocTypes() [8]string {
+	return [8]string{"sts", "vu", "inn", "snils", "rawID", "birthCert", "pass", "ip"}
+}
