@@ -47,6 +47,7 @@ func (a3 *A3) request(jsonReq []byte, r *Request) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
