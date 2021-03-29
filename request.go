@@ -34,14 +34,13 @@ func newA3Request(request interface{}, method string) *Request {
 }
 
 func (a3 *A3) request(jsonReq []byte, r *Request) ([]byte, error) {
-	req, err := http.NewRequest("POST", r.jsonUrl(a3.config.isProd), bytes.NewBuffer(jsonReq))
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	req, err := http.NewRequestWithContext(ctx, "POST", r.jsonUrl(a3.config.isProd), bytes.NewBuffer(jsonReq))
 	if err != nil {
 		return nil, err
 	}
 	req.Header.Set("Content-Type", "application/json")
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	req = req.WithContext(ctx)
 
 	resp, err := a3.client.Do(req)
 	if err != nil {
