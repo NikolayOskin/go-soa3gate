@@ -35,7 +35,7 @@ func main() {
 
     // поиск начислений по документам одного типа
     stsNumbers := []string{"7300311726", "3123170887"}
-    penalties, _ := a3.GetPenaltiesByType("sts", stsNumbers, true)
+    penalties, _ := a3.GetPenaltiesByDocs("sts", stsNumbers, true)
 
     for _, penalty := range penalties {
         println(penalty.BillNumber)

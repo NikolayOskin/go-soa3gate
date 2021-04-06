@@ -20,32 +20,30 @@ func (a3 *A3) GetPenaltyByBill(bill string, extStatus bool) (Penalty, bool, erro
 	return resp.Response.Penalties.Penalty[0], true, nil
 }
 
-/*
-GetPenaltiesByType: Получить бюджетные начисления по документам определенного типа.
-
-Доступный перечень типов: «vu» - номер ВУ; «sts» - номер СТС; «inn» - ИНН физлица; «snils» - СНИЛС;
-«birthCert» - свидетельство о рождении; «pass» - паспорт; «ip» - исполнительное производство ФССП,
-«rawID» - идентефикатор плательщика в формате ГИС.
-*/
-func (a3 *A3) GetPenaltiesByType(docType string, searchedDocs []string, extStatus bool) ([]Penalty, error) {
-	if extStatus && len(searchedDocs) > 2 {
+// GetPenaltiesByDocs: Получить бюджетные начисления по документам определенного типа.
+//
+// Доступный перечень типов: «vu» - номер ВУ; «sts» - номер СТС; «inn» - ИНН физлица; «snils» - СНИЛС;
+// «birthCert» - свидетельство о рождении; «pass» - паспорт; «ip» - исполнительное производство ФССП,
+// «rawID» - идентефикатор плательщика в формате ГИС.
+func (a3 *A3) GetPenaltiesByDocs(docType string, docs []string, extStatus bool) ([]Penalty, error) {
+	if extStatus && len(docs) > 2 {
 		// А3 позволяет запрашивать начисления со статусом квитирования не более, чем по двум документам в запросе
-		return nil, errors.New("GetPenaltiesByType error: max 2 documents allowed with extStatus true")
+		return nil, errors.New("GetPenaltiesByDocs error: max 2 documents allowed with extStatus true")
 	}
 	if !isDocTypeValid(docType) {
-		return nil, errors.New("GetPenaltiesByType error: invalid doctype")
+		return nil, errors.New("GetPenaltiesByDocs error: invalid doctype")
 	}
 
 	var documents []Doc
-	for _, doc := range searchedDocs {
+	for _, doc := range docs {
 		documents = append(documents, Doc{DocPayload{docType, doc}})
 	}
 	resp, err := a3.getPenalties(penaltiesByDocsReq(documents, extStatus, a3.config.authKey))
 	if err != nil {
-		return nil, fmt.Errorf("GetPenaltiesByType error: %v", err)
+		return nil, fmt.Errorf("GetPenaltiesByDocs error: %v", err)
 	}
 	if !resp.isOk() {
-		return nil, fmt.Errorf("GetPenaltiesByType error: %v", resp.Response.Result.ResMessage)
+		return nil, fmt.Errorf("GetPenaltiesByDocs error: %v", resp.Response.Result.ResMessage)
 	}
 	return resp.Response.Penalties.Penalty, nil
 }
