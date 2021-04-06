@@ -52,10 +52,8 @@ func isDocTypeValid(docType string) bool {
 	return false
 }
 
-/*
-Допустимые типы для поиска бюджетных начислений согласно описанию протокола.
-см. https://tech.a-3.ru/protokol-soa3gate-light-api/tehnicheskoe-opisanie-protokola#getPenalties
-*/
+// Допустимые типы для поиска бюджетных начислений согласно описанию протокола.
+// см. https://tech.a-3.ru/protokol-soa3gate-light-api/tehnicheskoe-opisanie-protokola#getPenalties
 func getAllowedDocTypes() [8]string {
 	return [8]string{"sts", "vu", "inn", "snils", "rawID", "birthCert", "pass", "ip"}
 }
