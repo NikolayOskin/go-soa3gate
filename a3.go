@@ -3,6 +3,7 @@ package soa3gate
 import (
 	"crypto/tls"
 	"net/http"
+	"time"
 )
 
 type A3 struct {
@@ -51,7 +52,9 @@ func newA3Client(trustCertPath string, pemCertPath string) (*http.Client, error)
 	}
 	return &http.Client{
 		Transport: &http.Transport{
-			TLSClientConfig: ssl,
+			TLSClientConfig:     ssl,
+			MaxIdleConnsPerHost: 20,
+			IdleConnTimeout:     90 * time.Second,
 		},
 	}, nil
 }
